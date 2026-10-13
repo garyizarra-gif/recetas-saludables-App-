@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Recetas Saludables</title>
+<meta name="theme-color" content="#2A2018">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <button class="back" id="btn-back" style="visibility:hidden">&#8592;</button>
+    <h1 id="titulo-pantalla">Recetas Saludables</h1>
+  </header>
+  <div class="disclaimer">
+    Según la fuente. Orientativo, no reemplaza consulta nutricional.
+  </div>
+  <main id="main"></main>
+  <div id="vista-imprimir"></div>
+  <nav class="bottomnav">
+    <button data-ruta="#/home"><span class="icono">&#127968;</span>Inicio</button>
+    <button data-ruta="#/lista"><span class="icono">&#128269;</span>Recetas</button>
+    <button data-ruta="#/que-cocino"><span class="icono">&#127869;</span>Qué cocino</button>
+    <button data-ruta="#/planificador"><span class="icono">&#128197;</span>Planificador</button>
+    <button data-ruta="#/favoritos"><span class="icono">&#9825;</span>Favoritos</button>
+    <button data-ruta="#/ajustes"><span class="icono">&#9881;</span>Ajustes</button>
+  </nav>
+  <footer class="firma-app">
+    <span>Elaborado por</span>
+    <span class="firma-logo-wrap">
+      <img src="logo_systemia_cerebro.png" alt="SystemIA" height="18" class="firma-logo" id="firma-logo-img"
+        onerror="this.style.display='none'; document.getElementById('firma-logo-fallback').style.display='inline'">
+      <span id="firma-logo-fallback" class="firma-logo-fallback" style="display:none">SystemIA</span>
+    </span>
+    <span>&middot; Cel. 965754455</span>
+  </footer>
+</div>
+<script src="config.js"></script>
+<script src="pdf.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

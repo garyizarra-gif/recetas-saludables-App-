@@ -1,0 +1,552 @@
+:root {
+  --noche: #1F1812;
+  --tierra: #2A2018;
+  --hueso: #F3E9D8;
+  --quinua: #BBA98C;
+  --maiz: #D4A333;
+  --critico: #C1452E;
+  --alerta: #CC8A2E;
+  --alerta-bg: #3A2A16;
+  --alerta-texto: #E7C380;
+  --borde: #44362A;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--noche);
+  color: var(--hueso);
+  /* sistema, no Google Fonts: la app debe cargar offline en zonas sin internet */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px;
+}
+
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--noche);
+  padding-bottom: 98px; /* espacio para nav inferior fija (64px) + firma (34px) */
+}
+
+header.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--tierra);
+  color: var(--hueso);
+  border-bottom: 2px solid var(--maiz);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+header.topbar button.back {
+  background: none;
+  border: none;
+  color: var(--maiz);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+header.topbar h1 {
+  font-size: 18px;
+  margin: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.disclaimer {
+  background: var(--alerta-bg);
+  color: var(--alerta-texto);
+  font-size: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--alerta);
+  line-height: 1.4;
+}
+
+main { flex: 1; padding: 16px; }
+
+.grid-objetivos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.btn-objetivo {
+  background: var(--tierra);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 20px 12px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--maiz);
+}
+.btn-objetivo.full { grid-column: 1 / -1; }
+.btn-objetivo small {
+  display: block;
+  font-weight: 400;
+  color: var(--quinua);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.filtros input[type="search"], .filtros input[type="text"], .filtros input[type="password"], .filtros select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  font-size: 14px;
+  background: var(--tierra);
+  color: var(--hueso);
+}
+.filtros input::placeholder { color: var(--quinua); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  border: 1px solid var(--maiz);
+  color: var(--maiz);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.chip.activo { background: var(--maiz); color: var(--noche); }
+
+.lista-recetas { display: flex; flex-direction: column; gap: 10px; }
+.tarjeta-receta {
+  background: var(--tierra);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--maiz);
+  border-radius: 12px;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+.tarjeta-receta img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: var(--borde);
+}
+.tarjeta-receta .info { flex: 1; min-width: 0; }
+.tarjeta-receta h3 { margin: 0 0 4px; font-size: 15px; color: var(--hueso); }
+.tarjeta-receta .meta { font-size: 12px; color: var(--quinua); }
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  background: rgba(212, 163, 51, 0.16);
+  color: var(--maiz);
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: 2px 4px 0 0;
+}
+.tag.fuente-label { background: none; color: var(--quinua); font-style: italic; padding-left: 0; }
+.fav-btn {
+  border: none;
+  background: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  align-self: flex-start;
+  color: var(--quinua);
+}
+
+.vacio { color: var(--quinua); text-align: center; padding: 32px 16px; }
+
+/* Detalle */
+.detalle-img { width: 100%; max-height: 260px; object-fit: cover; border-radius: 12px; background: var(--borde); }
+.detalle-titulo { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-top: 12px; }
+.detalle-titulo h2 { margin: 0; font-size: 20px; color: var(--hueso); }
+.macros-box {
+  background: var(--tierra);
+  border-left: 3px solid var(--maiz);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 12px 0;
+  font-size: 14px;
+  color: var(--hueso);
+}
+.macros-box.no-verificado {
+  background: var(--alerta-bg);
+  color: var(--alerta-texto);
+  border-left-color: var(--alerta);
+}
+h4.seccion { margin: 20px 0 8px; font-size: 15px; color: var(--maiz); }
+ul.ingredientes, ol.pasos { margin: 0; padding-left: 20px; }
+ul.ingredientes li, ol.pasos li { margin-bottom: 8px; line-height: 1.4; }
+.ilegible { color: var(--quinua); font-style: italic; }
+
+/* wrap porque ahora hay hasta 4 acciones (descargar / enviar / imprimir) y en
+   movil no caben en una sola fila */
+.acciones-detalle { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.accion {
+  flex: 1 1 120px;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--maiz);
+  color: var(--noche);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  /* el enlace de descarga usa esta misma clase: hay que igualarlo al boton */
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+.accion.secundario { background: var(--tierra); color: var(--maiz); border: 1px solid var(--maiz); font-weight: 400; }
+
+/* panel de resultado de la exportacion */
+.aviso-export {
+  margin: 12px 0;
+  padding: 12px;
+  border: 1px solid var(--maiz);
+  border-radius: 8px;
+  background: var(--alerta-bg);
+}
+.aviso-export p { margin: 0 0 8px; }
+.aviso-export p:last-child { margin-bottom: 0; }
+.aviso-export .accion { flex: 0 1 auto; margin-right: 8px; }
+
+/* Nav inferior */
+nav.bottomnav {
+  position: fixed;
+  bottom: 34px; /* deja sitio para la firma fija debajo */
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--tierra);
+  border-top: 1px solid var(--borde);
+  display: flex;
+  z-index: 20;
+}
+nav.bottomnav button {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 10px 4px;
+  font-size: 11px;
+  color: var(--quinua);
+  cursor: pointer;
+}
+nav.bottomnav button.activo { color: var(--maiz); font-weight: 600; }
+nav.bottomnav button .icono { display: block; font-size: 18px; margin-bottom: 2px; }
+
+/* Firma de autoria */
+footer.firma-app {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--noche);
+  border-top: 1px solid var(--borde);
+  color: var(--quinua);
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0 8px;
+  z-index: 15;
+}
+/* placa clara detras del logo: el multiply necesita un fondo claro para
+   que la tinta del logo se vea (sobre el fondo oscuro de la app se perderia) */
+.firma-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  background: var(--hueso);
+  border-radius: 999px;
+  padding: 2px 7px;
+  line-height: 0;
+}
+.firma-logo {
+  height: 18px;
+  display: block;
+  vertical-align: middle;
+  mix-blend-mode: multiply;
+  animation: firma-parpadeo 1.8s ease-in-out infinite;
+}
+.firma-logo-fallback {
+  font-weight: 600;
+  color: var(--noche);
+  animation: firma-parpadeo 1.8s ease-in-out infinite;
+}
+@keyframes firma-parpadeo {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .firma-logo, .firma-logo-fallback { animation: none; opacity: 1; }
+}
+
+/* Planificador */
+.dia-planner {
+  background: var(--tierra);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.dia-planner h4 { margin: 0 0 8px; font-size: 14px; color: var(--maiz); }
+.slot-comida {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid var(--borde);
+}
+.slot-comida:first-of-type { border-top: none; }
+.slot-comida .etiqueta-tipo { width: 70px; font-size: 12px; color: var(--quinua); text-transform: capitalize; }
+.slot-comida .nombre-plato { flex: 1; font-size: 13px; color: var(--hueso); }
+.slot-comida button.swap {
+  border: 1px solid var(--borde);
+  background: var(--noche);
+  color: var(--quinua);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.slot-comida button.swap:hover { color: var(--maiz); border-color: var(--maiz); }
+/* el "+" que manda un plato a Mi Plan */
+/* el "+" se vuelve "V" cuando el plato ya esta en Mi Plan: sin esto no hay
+   forma de saber si la pulsacion hizo algo */
+.slot-comida button.mas.ya {
+  background: transparent;
+  color: var(--maiz);
+  border: 1px solid var(--maiz);
+}
+.slot-comida button.mas {
+  border: 1px solid var(--maiz);
+  background: var(--maiz);
+  color: var(--noche);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.slot-comida .vacio-slot { flex: 1; font-size: 12px; color: var(--quinua); font-style: italic; }
+
+.select-dia {
+  background: var(--noche);
+  color: var(--hueso);
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 4px;
+}
+.btn-usar {
+  background: transparent;
+  color: var(--maiz);
+  border: 1px solid var(--maiz);
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.badge-critico { background: var(--critico); color: var(--hueso); }
+.badge-alerta { background: var(--alerta); color: var(--noche); }
+
+/* ---------- Mi Plan ---------- */
+/* El aviso se escribe por DOM sin redibujar la pantalla, para no mover el scroll. */
+.aviso-miplan { margin: 10px 0; font-size: 13px; line-height: 1.5; }
+p.aviso-miplan { padding: 10px 12px; border-radius: 8px; background: var(--alerta-bg); }
+.aviso-miplan:empty { display: none; }
+.aviso-miplan.ok { color: var(--maiz); }
+.aviso-miplan.no { color: var(--alerta-texto); }
+.aviso-miplan .accion { padding: 6px 12px; font-size: 13px; margin-left: 6px; }
+
+.fila-seleccion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: var(--tierra);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+}
+.fila-seleccion .nombre-plato {
+  flex: 1 1 100%;
+  font-size: 13px;
+  color: var(--hueso);
+  cursor: pointer;
+}
+/* los selects crecen para llenar la fila: asi los botones caen SIEMPRE a la
+   linea siguiente y todas las tarjetas se ven iguales, sin depender de lo
+   larga que sea la etiqueta de la fuente */
+.fila-seleccion select {
+  flex: 1 1 110px;
+  min-width: 0;
+  background: var(--noche);
+  color: var(--hueso);
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.fila-seleccion .tag.fuente-label { flex: 0 0 auto; margin: 0; }
+.fila-seleccion .accion {
+  flex: 1 1 0;
+  padding: 7px 12px;
+  font-size: 12px;
+}
+.accion[disabled] { opacity: .45; cursor: not-allowed; }
+
+/* cuadro con el mensaje de WhatsApp listo para copiar: hace falta porque
+   dentro del artifact no se pueden abrir enlaces externos */
+.texto-para-copiar {
+  width: 100%;
+  background: var(--noche);
+  color: var(--hueso);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  font-family: inherit;
+  resize: vertical;
+}
+.aviso-miplan .accion { margin-top: 6px; }
+
+/* Aviso flotante: fijo sobre la barra inferior, visible sea cual sea el scroll.
+   Hace falta porque los botones estan al final de una pagina muy larga y un
+   mensaje escrito arriba del todo no se ve nunca. */
+.aviso-flotante {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  bottom: 104px;
+  width: calc(100% - 32px);
+  max-width: 448px;
+  z-index: 30;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  background: var(--tierra);
+  border: 1px solid var(--maiz);
+  color: var(--hueso);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.aviso-flotante.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.aviso-flotante.no { border-color: var(--alerta); color: var(--alerta-texto); }
+
+/* visor del PDF dentro de la propia app */
+iframe.visor-pdf {
+  width: 100%;
+  height: 420px;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: #fff;
+  margin-top: 8px;
+}
+
+/* Dialogo propio: hace falta porque prompt() y confirm() del navegador estan
+   bloqueados dentro del marco de la vista previa y no responden. */
+.dialogo-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, .6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.dialogo {
+  width: 100%;
+  max-width: 400px;
+  background: var(--tierra);
+  border: 1px solid var(--maiz);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+}
+.dialogo h4 { margin: 0 0 8px; font-size: 16px; color: var(--maiz); }
+.dialogo p { margin: 0 0 12px; font-size: 13px; line-height: 1.5; color: var(--hueso); }
+.dialogo input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  background: var(--noche);
+  color: var(--hueso);
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.dialogo-opciones { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.dialogo-acciones { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* El plan leible dentro de la app: el marco de la vista previa no renderiza
+   PDFs, asi que ahi se muestra el mismo contenido como texto. */
+.plan-en-texto {
+  background: var(--noche);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.plan-en-texto h3 { margin: 0 0 10px; font-size: 15px; color: var(--maiz); }
+.plan-en-texto h4.seccion { margin: 14px 0 6px; font-size: 14px; }
+.plan-en-texto .dia-texto { margin: 10px 0 4px; font-size: 13px; color: var(--maiz); }
+.plan-en-texto .linea-plan { margin: 0 0 4px; font-size: 13px; line-height: 1.45; color: var(--hueso); }
+.plan-en-texto .etiqueta-tipo {
+  display: inline-block;
+  min-width: 68px;
+  color: var(--quinua);
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+@media print {
+  /* footer.firma-app y .aviso-export faltaban: la firma con el numero de celular
+     y el panel de descarga salian impresos en medio del menu. */
+  header.topbar, nav.bottomnav, .disclaimer, .acciones-detalle, .filtros,
+  footer.firma-app, .aviso-export, .aviso-flotante, .dialogo-fondo { display: none !important; }
+  #vista-imprimir { display: block !important; }
+  #app > main > *:not(#vista-imprimir) { display: none !important; }
+  .firma-logo, .firma-logo-fallback { animation: none !important; opacity: 1 !important; }
+  /* el tema de pantalla es oscuro; el papel siempre va con texto oscuro sobre blanco */
+  body { background: #fff; color: #000; }
+}
+#vista-imprimir { display: none; }
