@@ -2414,6 +2414,13 @@ fetch("data/recetas.json")
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    // updateViaCache: "none" es imprescindible. Sin el, el propio sw.js queda
+    // sujeto al Cache-Control normal del servidor (GitHub Pages lo sirve con
+    // max-age=600): el navegador puede comparar una version NUEVA contra una
+    // copia CACHEADA de la vieja, los ve "iguales", y nunca detecta que hay
+    // una actualizacion -- pase lo que pase en el servidor, incluso
+    // desinstalando y reinstalando la app. Confirmado reproduciendolo en
+    // scratchpad/driver/reproducir_cache_arreglado.js antes de este cambio.
+    navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).catch(() => {});
   });
 }
