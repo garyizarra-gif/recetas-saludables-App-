@@ -564,13 +564,31 @@ function docDeMiPlan(plan, titulo, opciones) {
 // falta porque el marco de la vista previa no renderiza PDFs: un <iframe> con
 // el archivo sale como un documento roto. Mismo origen que el PDF y que el
 // texto de WhatsApp: el contenido se escribe una sola vez.
+// Un emoji sutil por tipo de comida, SOLO donde el propio dispositivo lo
+// pinta solo: el plan dentro de la app y el mensaje de WhatsApp. El PDF usa
+// Helvetica con WinAnsiEncoding (CP1252), que no tiene glifos de emoji -- ahi
+// saldria como un cuadro vacio -- asi que pdf.js nunca pasa por aqui: lee
+// bloque.etiqueta tal cual, sin pasar por esta funcion.
+const EMOJI_POR_ETIQUETA = {
+  desayuno: "☕",      // taza de cafe
+  lonchera: "🍎",  // manzana
+  almuerzo: "🍽️",  // plato con cubiertos
+  cena: "🍲",      // olla de comida
+};
+function emojiDeEtiqueta(etiqueta) {
+  return EMOJI_POR_ETIQUETA[etiqueta] || "";
+}
+
 function htmlDeDoc(doc) {
   const partes = [`<h3>${esc(doc.titulo || "Mi plan")}</h3>`];
   (doc.bloques || []).forEach(b => {
     if (b.tipo === "h1") { partes.push(`<h4 class="seccion">${esc(b.texto)}</h4>`); return; }
     if (b.tipo === "h2") { partes.push(`<p class="dia-texto"><strong>${esc(b.texto)}</strong></p>`); return; }
     if (b.tipo === "nota" || b.tipo === "nota_final") { partes.push(`<p class="meta">${esc(b.texto)}</p>`); return; }
-    partes.push(`<p class="linea-plan">${b.etiqueta ? `<span class="etiqueta-tipo">${esc(b.etiqueta)}</span>` : ""}${esc(b.texto)}</p>`);
+    const marca = b.etiqueta
+      ? `<span class="etiqueta-tipo">${emojiDeEtiqueta(b.etiqueta)} ${esc(b.etiqueta)}</span>`
+      : "";
+    partes.push(`<p class="linea-plan">${marca}${esc(b.texto)}</p>`);
   });
   return partes.join("");
 }
@@ -639,7 +657,9 @@ function textoDeDoc(doc) {
       return;
     }
     if (b.tipo === "h2") { cerrarDia(); dia = b.texto; return; }
-    if (b.etiqueta && b.etiqueta !== "cena") comidas.push(b.etiqueta + " " + b.texto);
+    if (b.etiqueta && b.etiqueta !== "cena") {
+      comidas.push(emojiDeEtiqueta(b.etiqueta) + " " + b.etiqueta + " " + b.texto);
+    }
   });
   cerrarDia();
 
@@ -985,9 +1005,26 @@ function nombreArchivoWeb(nombrePDF) {
   return /\.pdf$/i.test(n) ? n.replace(/\.pdf$/i, ".html") : n + ".html";
 }
 
+// Si este es el motor de un navegador movil (no por el tacto: eso tambien lo
+// tiene un portatil con pantalla tactil, cuyo Chrome de escritorio SI pinta un
+// PDF en un iframe). navigator.userAgentData.mobile es lo mas fiable cuando
+// existe; donde no, se mira el User-Agent, que en todo navegador movil trae
+// "Mobi" (asi lo define el propio estandar de UA-CH).
+function esNavegadorMovil() {
+  try {
+    if (navigator.userAgentData && typeof navigator.userAgentData.mobile === "boolean") {
+      return navigator.userAgentData.mobile;
+    }
+    return /Mobi/i.test(navigator.userAgent || "");
+  } catch (e) {
+    return false;
+  }
+}
+
 // navigator.share solo sirve si acepta archivos: hay navegadores que tienen
 // share() pero rechazan files, y la unica forma fiable de saberlo es preguntar
 // con un File de prueba.
+
 //
 // OJO: que esto diga "si" NO garantiza que share() funcione. Dentro de un
 // iframe sin allow="web-share" la llamada rechaza con NotAllowedError aunque
@@ -1032,7 +1069,15 @@ function mostrarResultadoPDF(contenedor, blob, nombre, doc) {
     } catch (e) { url = ""; }
   }
 
-  const visor = url
+  // El navegador movil de Chrome/Android no pinta un PDF METIDO EN UN IFRAME:
+  // cuando no sabe, muestra un recuadro generico con el UUID del blob como
+  // "nombre" y un boton "Abrir" que no es de esta app. Confuso, y se vio en un
+  // movil real. Asi que el iframe solo se intenta en una computadora; en el
+  // telefono se muestra el plan en texto, igual que dentro del marco
+  // restringido del artifact. No es por el tacto (un portatil con pantalla
+  // tactil sigue usando el Chrome de escritorio, que si pinta el iframe): es
+  // por ser un navegador movil de verdad.
+  const visor = (url && !esNavegadorMovil())
     ? `<iframe class="visor-pdf" src="${url}" title="${esc(doc.titulo || "Documento")}"></iframe>`
     : `<div class="plan-en-texto">${htmlDeDoc(doc)}</div>`;
 
